@@ -1,2 +1,2 @@
 # javascript-dev-environment
-Starter kit for developing javascript based projects
+Starter kit for developing javascript based projects.

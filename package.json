@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "babel-node buildScripts/startMessage.js",
-    "start": "npm-run-all --parallel security-check start:app lint:watch test:watch",
+    "start": "npm-run-all --parallel security-check start:app lint:watch test:watch start-mockapi",
     "start:app": "babel-node buildScripts/srcServer.js",
     "lint": "esw webpack.config.* src buildScripts --color",
     "lint:watch": "npm run lint -- --watch",
@@ -13,7 +13,15 @@
     "localtunnel": "lt --port 5000",
     "share": "npm-run-all --parallel start:app localtunnel",
     "test": "mocha --reporter progress buildScripts/testSetup.js \"src/**/*.test.js\"",
-    "test:watch":"npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "generate-mock-data": "babel-node buildScripts/generateMockData",
+    "prestart-mockapi": "npm run generate-mock-data",
+    "start-mockapi": "json-server --watch src/api/db.json --port 3001",
+    "clean-dist": "rimraf ./dist && mkdir dist",
+    "prebuild": "npm-run-all clean-dist test lint",
+    "build": "babel-node buildScripts/build.js",
+    "postbuild": "babel-node buildScripts/distServer.js",
+    "deploy": "surge ./dist"
   },
   "repository": {
     "type": "git",
@@ -25,7 +33,9 @@
     "url": "https://github.com/tanveersidiq/javascript-dev-environment/issues"
   },
   "homepage": "https://github.com/tanveersidiq/javascript-dev-environment#readme",
-  "dependencies": {},
+  "dependencies": {
+    "whatwg-fetch": "1.0.0"
+  },
   "devDependencies": {
     "babel-cli": "6.16.0",
     "babel-core": "6.17.0",
